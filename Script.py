@@ -1,5 +1,6 @@
 from logging import getLogger, basicConfig, info, INFO
 from logging.handlers import TimedRotatingFileHandler
+from time import sleep
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
@@ -81,6 +82,7 @@ class WhatsBot(object):
 
     def execute(self):
         while True:
+            sleep(3)
             self.find_unread_chats(self.source_page())
             self.reach_home()
 
