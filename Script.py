@@ -1,4 +1,5 @@
-from time import sleep
+from logging import getLogger, basicConfig, info, exception, DEBUG
+from logging.handlers import TimedRotatingFileHandler
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
@@ -6,26 +7,32 @@ from rivescript import RiveScript
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from tkinter import messagebox
-import logging
 
 
-class TheWhatsBot(object):
+class WhatsBot(object):
     def __init__(self):
-        logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(lineno)d - %(message)s",
-                            datefmt="%m/%d/%Y %I:%M:%S", filename="Server.log")
-        self.bot = RiveScript()
-        self.bot.load_directory('dialogues')
-        self.bot.sort_replies()
-        self.driver = webdriver.Chrome()
-        self.chain = ActionChains(self.driver)
-        self.driver.get("https://web.whatsapp.com")
-        messagebox.showinfo(title='QR Code Scanner', message='Finish on screen 2-step verification, and then click OK.')
-        self.source_page()
+        try:
+            basicConfig(format="%(asctime)s - %(levelname)s - %(funcName)s - %(lineno)d - %(message)s",
+                        datefmt="%m/%d/%Y %I:%M:%S", level=DEBUG)
+            getLogger(__name__).addHandler(TimedRotatingFileHandler("logs/Log.log", when="midnight", backupCount=10))
+            self.bot = RiveScript()
+            self.bot.load_directory('dialogues')
+            self.bot.sort_replies()
+            self.driver = webdriver.Chrome()
+            self.chain = ActionChains(self.driver)
+            self.driver.get("https://web.whatsapp.com")
+            messagebox.showinfo(title='QR Code Scanner',
+                                message='Finish on screen 2-step verification, and then click OK.')
+            self.source_page()
+            info("Server started..")
+        except Exception as err:
+            exception(err)
+            raise err
 
     def source_page(self):
-        logging.info("Reloading source page...")
+        info("Reloading source page...")
         return BeautifulSoup(self.driver.page_source, "lxml")
 
     def find_unread_chats(self, soup):
@@ -55,12 +62,12 @@ class TheWhatsBot(object):
             for msg in unread_msgs.find_all('div', attrs={'class': '_3zb-j ZhF0n'}):
                 message_received = msg.text
                 reply = self.bot.reply(sender_name, message_received)
-                logging.info("My reply to " + sender_name + " is:" + reply)
+                info("My reply to " + sender_name + " is:" + reply)
                 self.send_reply(reply)
 
     def wait_page_to_load(self):
         return WebDriverWait(self.driver, 0).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="main"]/footer/div[1]/div[2]/div/div[2]')))
+            ec.visibility_of_element_located((By.XPATH, '//*[@id="main"]/footer/div[1]/div[2]/div/div[2]')))
 
     def send_reply(self, reply):
         self.wait_page_to_load().send_keys(reply + Keys.ENTER)
@@ -80,6 +87,6 @@ class TheWhatsBot(object):
 
 if __name__ == "__main__":
     try:
-        TheWhatsBot().execute()
-    except Exception as error:
-        logging.error(error)
+        WhatsBot().execute()
+    except Exception as exc:
+        exception(exc)
