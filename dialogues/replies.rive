@@ -1,0 +1,79 @@
++ [*] (hi|hello|hey) [*]
+- Hello!
+
++ how are you
+- I'm great, how are you?
+- I'm good, you?
+- Good :) you?
+- Great! You?
+- I'm fine, thanks for asking!
+
++ say something random
+- This {random}message|sentence{/random} has a random word.
+
++ tell me a poem
+- Little Miss Muffit sat on her tuffet,\n
+^ In a nonchalant sort of way.\n
+^ With her forcefield around her,\n
+^ The Spider, the bounder,\n
+^ Is not in the picture today.
+
++ what are you
+- I am an artificial intelligence programmed\s
+^ using RiveScript and my master is Khasim.
+
++ super
+- Duper..
+
++ what is up
+- Not much, you?
+- nm, you?
+- Not a lot, you?
+
++ (you are|are you) a robot
+- How did you know I'm a machine?
+
++ waste fellow
+- champestha naatakalesthe....
+
++ smile
+- :)
+
++ cry
+- :(
+
++ laugh
+- :D
+
++ ok
+- sare naakkuda ok aithe..
+
++ inka aapu
+- aaparu..
+
++ hmm
+- Hmmmmmm........
+
++ * chod *
+- Thu <star> chod, behen ke loude..
+- Mu me le mera..
+
++ * (mu mey|mumey|moomey) le mera *
+- Thu le le.. <star1> <star2>
+
++ * (bhosadi|bhosadike|bho sadi) wale *
+- <star1> bhosadi wale *
+
++ * loda *
+- Sudhar ja bhosadike..
+
++ * gand *
+- Ghanta
+
++ bye
+- Bye :)
+
+
+
+
+
