@@ -1,4 +1,4 @@
-from logging import getLogger, basicConfig, info, exception, DEBUG
+from logging import getLogger, basicConfig, info, INFO
 from logging.handlers import TimedRotatingFileHandler
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -15,11 +15,12 @@ class WhatsBot(object):
     def __init__(self):
         try:
             basicConfig(format="%(asctime)s - %(levelname)s - %(funcName)s - %(lineno)d - %(message)s",
-                        datefmt="%m/%d/%Y %I:%M:%S", level=DEBUG)
-            getLogger(__name__).addHandler(TimedRotatingFileHandler("logs/Log.log", when="midnight", backupCount=10))
+                        filename="../WB_logs/Log.log", datefmt="%m/%d/%Y %I:%M:%S", level=INFO)
+            getLogger(__name__).addHandler(TimedRotatingFileHandler("../WB_logs/Log.log", when="midnight", backupCount=10))
             self.bot = RiveScript()
             self.bot.load_directory('dialogues')
             self.bot.sort_replies()
+            info("Replies sorted..")
             self.driver = webdriver.Chrome()
             self.chain = ActionChains(self.driver)
             self.driver.get("https://web.whatsapp.com")
@@ -28,7 +29,6 @@ class WhatsBot(object):
             self.source_page()
             info("Server started..")
         except Exception as err:
-            exception(err)
             raise err
 
     def source_page(self):
@@ -89,4 +89,4 @@ if __name__ == "__main__":
     try:
         WhatsBot().execute()
     except Exception as exc:
-        exception(exc)
+        raise exc
