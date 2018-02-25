@@ -1,4 +1,4 @@
-from logging import getLogger, basicConfig, info, INFO
+from logging import getLogger, basicConfig, info, exception, INFO
 from logging.handlers import TimedRotatingFileHandler
 from time import sleep
 from selenium.webdriver import ActionChains
@@ -10,6 +10,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from tkinter import messagebox
+# from configparser import ConfigParser as cp
+from ConfigParser import ConfigParser
 
 
 class WhatsBot(object):
@@ -22,14 +24,19 @@ class WhatsBot(object):
             self.bot.load_directory('dialogues')
             self.bot.sort_replies()
             info("Replies sorted..")
+            cp = ConfigParser()
+            cp.read("config.ini")
+            self.ignore_list = cp.get("ignore_groups", "names")
+            self.include_list = cp.get("include_only", "names")
             self.driver = webdriver.Chrome()
             self.chain = ActionChains(self.driver)
             self.driver.get("https://web.whatsapp.com")
             messagebox.showinfo(title='QR Code Scanner',
-                                message='Finish on screen 2-step verification, and then click OK.')
+                                message='Finish 2-step verification scan QR code, and then click OK.')
             self.source_page()
             info("Server started..")
         except Exception as err:
+            exception(err)
             raise err
 
     def source_page(self):
@@ -43,11 +50,12 @@ class WhatsBot(object):
             for d in foo_descendants:
                 if d.name == 'div' and d.get('class', '') == ['_25Ooe']:
                     sender_name = d.text
+            if not len(self.include_list) and sender_name not in self.include_list:
+                return
             self.click_chat(sender_name)
 
     def click_chat(self, sender_name):
-        if sender_name in ["Roche SSW", "Hpy Bday RaviTeja", "Cricket Boys", "Penumuli kings", "14 I_Roommates",
-                           "LOCAL BOYS", "Falcon fighters'", "Buddies of TeC"]:
+        if sender_name in self.ignore_list:
             for click_class in self.driver.find_elements_by_class_name('_25Ooe'):
                 if click_class.text == sender_name:
                     self.chain.move_to_element(click_class).click().perform()
@@ -91,4 +99,5 @@ if __name__ == "__main__":
     try:
         WhatsBot().execute()
     except Exception as exc:
+        exception(exc)
         raise exc
