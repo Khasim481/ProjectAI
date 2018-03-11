@@ -10,7 +10,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from tkinter import messagebox
-# from configparser import ConfigParser as cp
 from ConfigParser import ConfigParser
 
 
@@ -40,7 +39,6 @@ class WhatsBot(object):
             raise err
 
     def source_page(self):
-        info("Reloading source page...")
         return BeautifulSoup(self.driver.page_source, "lxml")
 
     def find_unread_chats(self, soup):
